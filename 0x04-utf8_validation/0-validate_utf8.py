@@ -3,28 +3,37 @@
 
 
 def validUTF8(data):
-  # Initialize flags
-  single_byte = True 
-  two_bytes = False
+    """Determines if a given data set
+    represents a valid utf-8 encoding
+    """
+    number_bytes = 0
 
-  for byte in data:
-    # Mask to check 8 least significant bits
-    byte &= 0b11111111
-    
-    # Check for single byte character
-    if single_byte: 
-      if byte < 0b10000000:
-        continue
-      elif byte >= 0b11000000 and byte < 0b11100000:
-        two_bytes = True
-      else:
-        return False
-    
-    # Check for multi-byte characters
-    elif two_bytes:
-      if byte >= 0b10000000 and byte < 0b11000000:
-        two_bytes = False
-      else:
-        return False
+    mask_1 = 1 << 7
+    mask_2 = 1 << 6
 
-  return not two_bytes
+    for i in data:
+
+        mask_byte = 1 << 7
+
+        if number_bytes == 0:
+
+            while mask_byte & i:
+                number_bytes += 1
+                mask_byte = mask_byte >> 1
+
+            if number_bytes == 0:
+                continue
+
+            if number_bytes == 1 or number_bytes > 4:
+                return False
+
+        else:
+            if not (i & mask_1 and not (i & mask_2)):
+                return False
+
+        number_bytes -= 1
+
+    if number_bytes == 0:
+        return True
+
+    return False
