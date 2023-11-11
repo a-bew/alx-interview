@@ -6,6 +6,13 @@ def get_movie_characters(movie_id):
     # Define the base URL for the Star Wars API
     base_url = "https://swapi-api.alx-tools.com/api/films/"
 
+    try:
+        # Ensure movie_id is a valid integer
+        movie_id = int(movie_id)
+    except ValueError:
+        print("Error: Movie ID must be a valid integer.")
+        sys.exit(1)
+
     # Make a request to the API to get the movie information
     response = requests.get(base_url + str(movie_id))
 
