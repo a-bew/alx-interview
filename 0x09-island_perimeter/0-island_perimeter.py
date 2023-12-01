@@ -1,25 +1,27 @@
 #!/usr/bin/python3
-"""
-Solution to the 0-island_perimeter
-"""
+''' solving the island perimeter problem '''
 
 
 def island_perimeter(grid):
-    perimeter = 0
+    '''container function for dfs'''
+    visited = set()
 
-    rows, cols = len(grid), len(grid[0])
+    def dfs(i, j):
+        '''dfs implementation'''
+        if i >= len(grid) or j >= len(grid[0]) or \
+                i < 0 or j < 0 or grid[i][j] == 0:
+            return 1
+        if (i, j) in visited:
+            return 0
 
-    for i in range(rows):
-        for j in range(cols):
-            if grid[i][j] == 1:
-                perimeter += 4
+        visited.add((i, j))
+        perimeter = dfs(i, j + 1)
+        perimeter += dfs(i + 1, j)
+        perimeter += dfs(i, j - 1)
+        perimeter += dfs(i - 1, j)
+        return perimeter
 
-                # Check left neighbor
-                if j > 0 and grid[i][j - 1] == 1:
-                    perimeter -= 2
-
-                # Check top neighbor
-                if i > 0 and grid[i - 1][j] == 1:
-                    perimeter -= 2
-
-    return perimeter
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j]:
+                return dfs(i, j)
